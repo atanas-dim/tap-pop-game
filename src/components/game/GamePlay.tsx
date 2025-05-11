@@ -1,85 +1,16 @@
 import { createEffect, createSignal, For } from "solid-js";
+import { pickRandomEmoji } from "~/utils/emojis";
+import PoppingItem from "./PoppingItem";
+import { createRandomId } from "~/utils/helpers";
 
-const pickRandomEmoji = () => {
-  const emojis = [
-    "🍎",
-    "🍌",
-    "🍍",
-    "🍇",
-    "🍉",
-    "🍓",
-    "🍒",
-    "🍊",
-    "🍋",
-    "🍑", // Fruits
-    "🥭",
-    "🍒",
-    "🍍",
-    "🍋",
-    "🍏",
-    "🍅",
-    "🥝",
-    "🍠",
-    "🥕", // More fruits & vegetables
-    "🥬",
-    "🥒",
-    "🍆",
-    "🌶",
-    "🍄",
-    "🍪",
-    "🍫",
-    "🍩",
-    "🍰",
-    "🍜", // Food items
-    "🍣",
-    "🥗",
-    "🍕",
-    "🍔",
-    "🌮",
-    "🍦",
-    "🍻",
-    "🍺",
-    "🥤", // More food and drinks
-    "⚡",
-    "💥",
-    "🔥",
-    "🌈",
-    "🌟",
-    "🌙",
-    "🎉",
-    "🎁",
-    "🎈",
-    "🎤", // Fun objects and symbols
-    "🚀",
-    "🛸",
-    "🎮",
-    "🎲",
-    "🕹",
-    "🧩",
-    "🔮",
-    "📱",
-    "💻",
-    "📸", // Technology and games
-    "💎",
-    "🔑",
-    "🛍",
-    "🎬",
-    "⏰",
-    "🎩",
-    "🎒",
-    "👓",
-    "🕶",
-    "🧸", // Miscellaneous items
-  ];
-
-  const randomIndex = Math.floor(Math.random() * emojis.length);
-  return emojis[randomIndex];
+export type PoppingItemDef = {
+  icon: string;
+  points: number;
+  id: string;
 };
 
 const GamePlay = () => {
-  const [activeItems, setActiveItems] = createSignal<
-    Array<{ points: number; icon: string }>
-  >([]);
+  const [activeItems, setActiveItems] = createSignal<Array<PoppingItemDef>>([]);
 
   createEffect(() => {
     const interval = setInterval(() => {
@@ -87,6 +18,7 @@ const GamePlay = () => {
         setActiveItems((prev) => [
           ...prev,
           {
+            id: createRandomId(),
             points: 10,
             icon: pickRandomEmoji(),
           },
@@ -96,17 +28,18 @@ const GamePlay = () => {
     return () => clearInterval(interval);
   });
 
-  createEffect(() => {
-    console.log(activeItems());
-  });
-
   return (
-    <div class="relative size-full">
+    <div class="relative size-full overflow-hidden">
       <For each={activeItems()}>
         {(item) => (
-          <div class="flex size-30 items-center justify-center text-7xl leading-[0.8]">
-            {item.icon}
-          </div>
+          <PoppingItem
+            {...item}
+            onPop={() =>
+              setActiveItems((prev) =>
+                prev.filter((prevItem) => prevItem.id !== item.id),
+              )
+            }
+          />
         )}
       </For>
     </div>

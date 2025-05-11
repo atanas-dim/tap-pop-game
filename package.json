@@ -9,8 +9,10 @@
   "dependencies": {
     "@solidjs/router": "^0.15.0",
     "@solidjs/start": "^1.1.0",
+    "gsap": "^3.13.0",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "solid-js": "^1.9.5",
+    "solid-transition-group": "^0.3.0",
     "vinxi": "^0.5.3"
   },
   "devDependencies": {
