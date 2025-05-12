@@ -1,12 +1,9 @@
 import { type Component, createSignal, Match, onMount, Switch } from "solid-js";
 import { PoppingItemDef } from "./GamePlay";
 import gsap from "gsap";
-import CustomEase from "gsap/dist/CustomEase";
 import { Transition } from "solid-transition-group";
 import { delay } from "~/utils/helpers";
 import Star from "./Star";
-
-gsap.registerPlugin(CustomEase);
 
 export type PoppingItemProps = PoppingItemDef & {
   onPop: () => void;
