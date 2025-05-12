@@ -28,17 +28,21 @@ const GamePlay = () => {
     return () => clearInterval(interval);
   });
 
+  const removeItem = (itemId: string) => {
+    setActiveItems((prev) => prev.filter((prevItem) => prevItem.id !== itemId));
+  };
+
   return (
-    <div class="relative size-full overflow-hidden">
+    <div class="bg-rings relative size-full overflow-hidden">
       <For each={activeItems()}>
         {(item) => (
           <PoppingItem
             {...item}
-            onPop={() =>
-              setActiveItems((prev) =>
-                prev.filter((prevItem) => prevItem.id !== item.id),
-              )
-            }
+            onPop={() => {
+              removeItem(item.id);
+              // TODO set collected points to state
+            }}
+            onTimelineComplete={() => removeItem(item.id)}
           />
         )}
       </For>

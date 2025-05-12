@@ -7,35 +7,70 @@ import { delay } from "~/utils/helpers";
 
 gsap.registerPlugin(CustomEase);
 
-export type PoppingItemProps = PoppingItemDef & { onPop: () => void };
+export type PoppingItemProps = PoppingItemDef & {
+  onPop: () => void;
+  onTimelineComplete: () => void;
+};
 
-const PoppingItem: Component<PoppingItemProps> = ({ icon, points, onPop }) => {
+const PoppingItem: Component<PoppingItemProps> = ({
+  icon,
+  points,
+  onPop,
+  onTimelineComplete,
+}) => {
   let el!: HTMLDivElement;
-  let tween: gsap.core.Tween | null = null;
+  let timeline: gsap.core.Timeline | null = null;
   const [key, setKey] = createSignal("icon");
 
   onMount(() => {
     const randomXPercent = gsap.utils.random(15, 85);
-    const randomXOffset = gsap.utils.random(-10, 10);
+    const randomYPercent = gsap.utils.random(15, 85);
 
-    CustomEase.create(
-      "poppiing-item-ease",
-      "M0,0 C0,0 0.129,0.543 0.181,0.543 0.252,0.543 0.232,0.406 0.312,0.406 0.529,0.406 1,1 1,1",
-    );
+    const randomRotation = gsap.utils.random([-6, 6]);
+    const randomOffset = gsap.utils.random([5, 10]);
 
-    tween = gsap.fromTo(
-      el,
-      {
-        left: randomXPercent + "%",
-        top: -20 + "%",
-      },
-      {
-        left: randomXPercent + randomXOffset + "%",
-        top: 120 + "%",
-        duration: 16,
-        ease: "poppiing-item-ease",
-      },
-    );
+    gsap.set(el, {
+      top: `-20%`,
+      left: `${randomXPercent}%`,
+    });
+
+    timeline = gsap
+      .timeline()
+      .set(el, {
+        rotate: randomRotation,
+        x: randomOffset,
+      })
+      .to(
+        el,
+        {
+          top: `${randomYPercent}%`,
+          duration: 1,
+          ease: "back.out(0.8)",
+        },
+        0,
+      )
+      .to(
+        el,
+        {
+          rotate: -randomRotation,
+          x: -randomOffset,
+          yoyo: true,
+          repeat: -1,
+          ease: "sine.inOut",
+          duration: 3,
+        },
+        0,
+      )
+      .to(
+        el,
+        {
+          top: `120%`,
+          duration: 1,
+          ease: "slow",
+          onComplete: onTimelineComplete,
+        },
+        5,
+      );
   });
 
   return (
@@ -44,7 +79,7 @@ const PoppingItem: Component<PoppingItemProps> = ({ icon, points, onPop }) => {
       class="absolute flex size-30 -translate-1/2 items-center justify-center text-7xl leading-[0.8] *:select-none"
       onClick={async () => {
         setKey("points");
-        if (tween) tween.kill();
+        if (timeline) timeline.kill();
       }}
     >
       <Transition

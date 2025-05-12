@@ -4,4 +4,13 @@
   overscroll-behavior: none;
 }
 
-/* TODO Add theme */
+.bg-rings {
+  --ray-color: rgba(255, 255, 255, 0.1);
+  background-image: repeating-radial-gradient(
+    circle,
+    var(--ray-color),
+    var(--ray-color) 20px,
+    transparent 20px,
+    transparent 40px
+  );
+}
