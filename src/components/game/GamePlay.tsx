@@ -13,7 +13,7 @@ const GamePlay = () => {
   const [activeItems, setActiveItems] = createSignal<Array<PoppingItemDef>>([]);
 
   createEffect(() => {
-    const interval = setInterval(() => {
+    const timeout = setInterval(() => {
       if (activeItems().length < 5)
         setActiveItems((prev) => [
           ...prev,
@@ -23,9 +23,9 @@ const GamePlay = () => {
             icon: pickRandomEmoji(),
           },
         ]);
-    }, 1000);
+    }, 600);
 
-    return () => clearInterval(interval);
+    return () => clearTimeout(timeout);
   });
 
   const removeItem = (itemId: string) => {

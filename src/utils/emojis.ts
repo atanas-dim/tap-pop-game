@@ -1,3 +1,4 @@
+// TODO Replace with PNGs for consistency in all browsers
 const EMOJIS = [
   "🍎",
   "🍌",
